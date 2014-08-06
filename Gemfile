@@ -52,3 +52,8 @@ group :production do
 end
 
 gem 'sqlite3', groups: %w(test development), require: false
+
+# RSpec
+group :development, :test do
+	gem 'rspec-rails', '~> 2.0'
+end
