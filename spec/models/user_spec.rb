@@ -31,7 +31,7 @@ RSpec.describe User, :type => :model do
 
 	describe "when email format is valid" do
 		it "should be valid" do
-			addresses = %w[1@to.com 2@to.com 3@to.com]
+			addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
 			addresses.each do|valid_address|
 				@user.email = valid_address
 				expect(@user).to be_valid
@@ -41,7 +41,7 @@ RSpec.describe User, :type => :model do
 
 	describe "when email format is invalid" do
 		it "should be invalid" do
-			addresses = %w[1@to,net 2_at_to.net 3@to+net]
+			addresses = %w[user@foo,com user_at_foo.org example.user@foo. foo@bar_baz.com foo@bar+baz.com foo@var..com]
 			addresses.each do|invalid_address|
 				@user.email = invalid_address
 				expect(@user).not_to be_valid
@@ -58,7 +58,7 @@ RSpec.describe User, :type => :model do
 		it {should_not be_valid }
 	end
 
-=begin
+begin
 	describe "when password is not present" do
 		before do
 			@user = User.new(name:"Example User",email:"user@example.com",password:"",password_confirmation:"")
@@ -70,7 +70,7 @@ RSpec.describe User, :type => :model do
 		before {@user.password_confirmation = "mismatch" }
 		it { should_not be_valid}
 	end
-=end
+end
 	it {should respond_to(:authenticate)}
 
 	describe "with a password that's too short" do
@@ -95,4 +95,13 @@ RSpec.describe User, :type => :model do
 		end
 	end
 
+	describe "email address with mixed case" do
+		let(:mixed_case_email){"Foo@ExAMPie.CoM"}
+
+		it "should be saved as all lower-case" do
+			@user.email = mixed_case_email
+			@user.save
+			expect(@user.reload.email).to eq mixed_case_email.downcase
+		end
+	end
 end
