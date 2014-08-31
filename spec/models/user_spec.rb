@@ -1,9 +1,10 @@
-require 'rails_helper'
+#require 'rails_helper'
+require 'spec_helper'
 
 RSpec.describe User, :type => :model do
  #pending "add some examples to (or delete) #{__FILE__}"
 	before do
-		@user=User.new(name:"Example User",email:"user@example.com",password:"foobar",password_confirmation:"foobar")
+		@user=User.new(name:"Example User",email:"user2@example.com",password:"foobar",password_confirmation:"foobar")
 	end
 
 	subject{@user}
@@ -12,6 +13,8 @@ RSpec.describe User, :type => :model do
 	it{should respond_to(:password_digest)}
 	it{should respond_to(:password)}
 	it{should respond_to(:password_confirmation)}
+	it{should respond_to(:remember_token)}
+	it{should respond_to(:authenticate)}
 	it{should be_valid}
 
 	describe "when name is not present" do
@@ -52,13 +55,14 @@ RSpec.describe User, :type => :model do
 	describe "when email address is already taken" do
 		before do
 			user_with_same_email = @user.dup
+			user_with_same_email.email = @user.email.upcase
 			user_with_same_email.save
 		end
 
 		it {should_not be_valid }
 	end
 
-begin
+#begin
 	describe "when password is not present" do
 		before do
 			@user = User.new(name:"Example User",email:"user@example.com",password:"",password_confirmation:"")
@@ -70,8 +74,7 @@ begin
 		before {@user.password_confirmation = "mismatch" }
 		it { should_not be_valid}
 	end
-end
-	it {should respond_to(:authenticate)}
+#end
 
 	describe "with a password that's too short" do
 		before {@user.password = @user.password_confirmation = "a"*5}
@@ -103,5 +106,10 @@ end
 			@user.save
 			expect(@user.reload.email).to eq mixed_case_email.downcase
 		end
+	end
+
+	describe "remember token" do
+		before {@user.save}
+		its(:remember_token){should_not be_blank}
 	end
 end
