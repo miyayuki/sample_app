@@ -1,17 +1,6 @@
 require 'rails_helper'
 require 'spec_helper'
 
-=begin
-RSpec.describe "AuthenticationPages", :type => :request do
-  describe "GET /authentication_pages" do
-    it "works! (now write some real specs)" do
-      get authentication_pages_index_path
-      expect(response.status).to be(200)
-    end
-  end
-end
-=end
-
 describe "Authentication" do
 
 	subject{page}
@@ -78,5 +67,23 @@ describe "Authentication" do
 
 			end
 		end
+
+		describe "as wrong user" do
+			let(:user){FactoryGirl.create(:user)}
+			let(:wrong_user){FactoryGirl.create(:user, email:"wrong@example.com")}
+			before {sign_in user, no_capybara:true}
+
+			describe "submitting a GET request to the Users#edit action" do
+				before {get edit_user_path(wrong_user)}
+				specify {expect(response.body).not_to match(full_title('Edit user'))}
+				specify {expect(response).to redirect_to(root_url+"signin")}
+			end
+
+			describe "submitting a PATCH request to the Users#update action" do
+				before {patch user_path(wrong_user)}
+				specify {expect(response).to redirect_to(root_url+"signin")}
+			end
+		end
 	end
+
 end
