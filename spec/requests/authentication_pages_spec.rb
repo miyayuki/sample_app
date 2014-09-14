@@ -94,11 +94,9 @@ describe "Authentication" do
 								click_button "Sign in"
 							end
 
-=begin
 							it "should render the default (profile) page" do
-								expect(page).to have_title(user.name)
+								expect(page).to have_title('Edit user')
 							end
-=end
 						end
 					end
 				end
