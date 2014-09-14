@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 RSpec.describe User, :type => :model do
- #pending "add some examples to (or delete) #{__FILE__}"
 	before do
 		@user=User.new(name:"Example User",email:"user2@example.com",password:"foobar",password_confirmation:"foobar")
 	end
 
 	subject{@user}
+
 	it{should respond_to(:name)}
 	it{should respond_to(:email)}
 	it{should respond_to(:password_digest)}
@@ -15,6 +15,7 @@ RSpec.describe User, :type => :model do
 	it{should respond_to(:remember_token)}
 	it{should respond_to(:authenticate)}
 	it{should respond_to(:admin)}
+	it{should respond_to(:microposts)}
 
 	it{should be_valid}
 	it{should_not be_admin}
@@ -39,7 +40,7 @@ RSpec.describe User, :type => :model do
 	end
 
 	describe "when name is too long" do
-		before{@user.name = "a"*21}
+		before{@user.name = "a"*51}
 		it {should_not be_valid}
 	end
 
@@ -73,7 +74,6 @@ RSpec.describe User, :type => :model do
 		it {should_not be_valid }
 	end
 
-#begin
 	describe "when password is not present" do
 		before do
 			@user = User.new(name:"Example User",email:"user@example.com",password:"",password_confirmation:"")
@@ -85,7 +85,6 @@ RSpec.describe User, :type => :model do
 		before {@user.password_confirmation = "mismatch" }
 		it { should_not be_valid}
 	end
-#end
 
 	describe "with a password that's too short" do
 		before {@user.password = @user.password_confirmation = "a"*5}
@@ -122,5 +121,28 @@ RSpec.describe User, :type => :model do
 	describe "remember token" do
 		before {@user.save}
 		its(:remember_token){should_not be_blank}
+	end
+
+	describe "micropost associations" do
+		before {@user.save}
+		let!(:older_micropost) do
+			FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+		end
+		let!(:newer_micropost) do
+			FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+		end
+
+		it "should have the right microposts in the right order" do
+			expect(@user.microposts.to_a).to eq [newer_micropost, older_micropost]
+		end
+
+		it "should destroy associated microposts" do
+			microposts = @user.microposts.to_a
+			@user.destroy
+			expect(microposts).not_to be_empty
+			microposts.each do |micropost|
+				expect(Micropost.where(id:micropost.id)).to be_empty
+			end
+		end
 	end
 end
