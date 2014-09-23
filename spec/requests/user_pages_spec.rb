@@ -160,6 +160,7 @@ describe "User Pages" do
 	end
 
 	describe "following/followers" do
+
 		let(:user){FactoryGirl.create(:user)}
 		let(:other_user){FactoryGirl.create(:user)}
 		before{user.follow!(other_user)}
