@@ -13,7 +13,7 @@ def make_users
 							password_confirmation:"foobar",
 							admin:true)
 
-	19.times do|n|
+	99.times do|n|
 		name = Faker::Name.name
 		p name
 		email = "test-#{n+1}@test.jp"
@@ -31,4 +31,13 @@ def make_microposts
 		content = Faker::Lorem.sentence(5)
 			users.each {|user| user.microposts.create!(content:content)}
 	end
+end
+
+def make_relationships
+	users = User.all
+	user = users.first
+	followed_users = users[2..50]
+	followers = users[3..40]
+	followed_users.each{ |followed| user.follow!(followed)}
+	followers.each { |follower| follwer.follow!(user)}
 end

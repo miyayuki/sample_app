@@ -158,4 +158,17 @@ describe "User Pages" do
 			specify {expect(user.reload).not_to be_admin}
 		end
 	end
+
+	describe "following/folloers" do
+
+		let(:user){FactoryGirl.create(:user)}
+		let(:other_user){FactoryGirl.create(:user)}
+		before{user.follow!(other_user)}
+
+		describe "folllowed users" do
+		end
+
+		describe "followers" do
+		end
+	end
 end
