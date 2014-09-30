@@ -62,6 +62,7 @@ describe "User Pages" do
 
 			describe "following a user" do
 				before {visit user_path(other_user)}
+
 				it "should increment the followed user count" do
 					expect do
 						click_button "Follow"
