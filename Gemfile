@@ -14,6 +14,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 
+gem 'bcrypt'
 gem 'bcrypt-ruby'
 gem 'faker'
 gem 'will_paginate'
@@ -68,7 +69,8 @@ gem 'rspec-core'
 group :development, :test do
 	gem 'rspec-rails'
 	gem 'guard-rspec'
-	gem 'spork-rails'
+	gem 'rspec-core'
+	gem 'spork'
 	gem 'guard-spork'
 	gem 'childprocess'
 end
